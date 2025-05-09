@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Simulasi Frekuensi Harapan - Undian Jalan Santai</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #43cea2, #185a9d);
+      color: #fff;
+      padding: 30px;
+    }
+    .card {
+      background: rgba(0,0,0,0.7);
+      border-radius: 15px;
+      padding: 25px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      margin-top: 15px;
+      display: block;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      margin-top: 5px;
+    }
+    button {
+      background-color: #00e676;
+      color: black;
+      padding: 10px;
+      margin-top: 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      width: 100%;
+    }
+    .feedback {
+      font-size: 16px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+    .correct {
+      color: #00ff00;
+    }
+    .incorrect {
+      color: #ff5252;
+    }
+    .steps, .result {
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>Simulasi Frekuensi Harapan: Undian Jalan Santai</h2>
+    <p><strong>Skenario:</strong> Sebuah sekolah mengadakan jalan santai dan menyediakan 5 hadiah utama. Total peserta adalah 200 orang. Berapa frekuensi harapan seorang peserta untuk mendapatkan hadiah jika peluang menang adalah 2%?</p>
+
+    <label for="peluang">Masukkan peluang menang (%):</label>
+    <input type="number" id="peluang" placeholder="Contoh: 2">
+
+    <label for="jumlah">Masukkan jumlah peserta:</label>
+    <input type="number" id="jumlah" placeholder="Contoh: 200">
+
+    <label for="jawaban">Frekuensi harapan menurutmu:</label>
+    <input type="number" id="jawaban" placeholder="Contoh: 4">
+
+    <button onclick="cekJawaban()">Cek Jawaban</button>
+
+    <div class="steps" id="steps"></div>
+    <div class="result" id="hasil"></div>
+    <div class="feedback" id="feedback"></div>
+  </div>
+
+  <!-- Suara efek -->
+  <audio id="suaraBenar" src="Benar.mp3" preload="auto"></audio>
+  <audio id="suaraSalah" src="Salah.mp3" preload="auto"></audio>
+
+  <script>
+    function cekJawaban() {
+      const peluang = parseFloat(document.getElementById("peluang").value);
+      const jumlah = parseFloat(document.getElementById("jumlah").value);
+      const jawaban = parseFloat(document.getElementById("jawaban").value);
+
+      const benarAudio = document.getElementById("suaraBenar");
+      const salahAudio = document.getElementById("suaraSalah");
+
+      if (isNaN(peluang) || isNaN(jumlah) || isNaN(jawaban) || peluang < 0 || jumlah <= 0) {
+        document.getElementById("hasil").innerHTML = "❗ Masukkan angka yang valid.";
+        return;
+      }
+
+      const frekuensiHarapan = (peluang / 100) * jumlah;
+
+      // Langkah-langkah
+      const langkahHTML = `
+        <strong>Langkah-langkah Perhitungan:</strong><br>
+        Frekuensi Harapan = Peluang × Jumlah peserta<br>
+        Frekuensi Harapan = (${peluang}% × ${jumlah})<br>
+        Frekuensi Harapan = ${frekuensiHarapan.toFixed(2)}
+      `;
+      document.getElementById("steps").innerHTML = langkahHTML;
+
+      // Hasil akhir
+      document.getElementById("hasil").innerHTML = `✅ Hasil perhitungan: <strong>${frekuensiHarapan.toFixed(2)}</strong> peserta diperkirakan akan menang.`;
+
+      // Cek benar atau salah dan putar audio
+      if (Math.abs(jawaban - frekuensiHarapan) < 0.5) {
+        document.getElementById("feedback").innerHTML = `<span class="correct">Jawaban kamu BENAR! 🎉</span>`;
+        benarAudio.currentTime = 0;
+        benarAudio.play().catch(e => console.error("Gagal memutar suara benar:", e));
+      } else {
+        document.getElementById("feedback").innerHTML = `<span class="incorrect">Jawaban kamu SALAH. Coba lagi ya!</span>`;
+        salahAudio.currentTime = 0;
+        salahAudio.play().catch(e => console.error("Gagal memutar suara salah:", e));
+      }
+    }
+  </script>
+
+</body>
+</html>
